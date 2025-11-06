@@ -1,84 +1,19 @@
-class Gallina:
+class Animal:
     def __init__(self, codigo, raza, edad):
         self.codigo = codigo
         self.raza = raza
         self.edad = edad
-        self.registros = []
+        self.produccion = []
 
-    def guardar_semana(self, semana, huevos):
-        for i, par in enumerate(self.registros):
-            if par[0] == semana:
-                self.registros[i] = (semana, huevos)
-                return "actualizado"
-        self.registros.append((semana, huevos))
-        return "agregado"
+    def registrar_produccion(self, semana, huevos):
+        for i, (sem, _) in enumerate(self.produccion):
+            if sem == semana:
+                self.produccion[i] = (semana, huevos)
+                return
+        self.produccion.append((semana, huevos))
 
-    def huevos_semana(self, semana):
-        for s, h in self.registros:
-            if s == semana:
-                return h
-        return 0
+    def produccion_total(self):
+        return sum(huevos for _, huevos in self.produccion)
 
-    def huevos_totales(self):
-        t = 0
-        for _, h in self.registros:
-            t += h
-        return t
-
-
-class Bodega:
-    def __init__(self):
-        self.aves = []
-
-    def buscar(self, codigo):
-        for g in self.aves:
-            if g.codigo == codigo:
-                return g
-        return None
-
-    def crear(self, codigo, raza, edad):
-        if self.buscar(codigo):
-            return "existe"
-        self.aves.append(Gallina(codigo, raza, edad))
-        return "creado"
-
-    def listar(self):
-        if not self.aves:
-            return "sin aves"
-        filas = []
-        for g in self.aves:
-            filas.append(f"{g.codigo} | {g.raza} | {g.edad} años | sem:{len(g.registros)}")
-        return "\n".join(filas)
-
-    def editar(self, codigo, raza, edad):
-        g = self.buscar(codigo)
-        if not g:
-            return "no existe"
-        g.raza = raza
-        g.edad = edad
-        return "editado"
-
-    def eliminar(self, codigo):
-        g = self.buscar(codigo)
-        if not g:
-            return "no existe"
-        self.aves.remove(g)
-        return "eliminado"
-
-    def registrar(self, codigo, semana, huevos):
-        g = self.buscar(codigo)
-        if not g:
-            return "no existe"
-        return g.guardar_semana(semana, huevos)
-
-    def consultar_semana(self, codigo, semana):
-        g = self.buscar(codigo)
-        if not g:
-            return "no existe"
-        return g.huevos_semana(semana)
-
-    def consultar_total(self, codigo):
-        g = self.buscar(codigo)
-        if not g:
-            return "no existe"
-        return g.huevos_totales()
+    def __str__(self):
+        return f"Código: {self.codigo}, Raza: {self.raza}, Edad: {self.edad}, Producción total: {self.produccion_total()} huevos"
